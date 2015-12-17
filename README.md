@@ -13,3 +13,4 @@ billing.phtml ｜ 檔案位置位於
 shipping.phtml ｜ 檔案位置位於
 /usr/share/nginx/html/app/design/frontend/base/default/template/checkout/onepage/shipping.phtml
 前台顯示於 ｜ 結帳 / 配送資訊 / 下拉選單中選擇『新的地址』
+檔案權限必須要700，不然 Onepage Checkout 會出錯，無法選擇配送方式
