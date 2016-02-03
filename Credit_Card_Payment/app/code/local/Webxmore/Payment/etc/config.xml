@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * @category    Webxmores
+ * @package     Webxmore_Payment
+ * @copyright   Copyright (c) 2011 Webxmore 
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+-->
+<config>
+    <modules>
+        <Webxmore_Payment>
+            <version>1.0.0</version>
+        </Webxmore_Payment>
+    </modules>
+    <global>
+        <models>
+            <wbxpayment>
+                <class>Webxmore_Payment_Model</class>
+                <resourceModel>wbxpayment_mysql4</resourceModel>
+            </wbxpayment>
+            <wbxpayment_mysql4>
+                <class>Webxmore_Payment_Model_Mysql4</class>
+                <entities>    
+                    <order>
+                        <table>wbxpayment_orders_info</table>
+                    </order>
+                </entities>
+            </wbxpayment_mysql4>
+        </models>
+        <helpers>
+            <wbxpayment>
+                <class>Webxmore_Payment_Helper</class>
+            </wbxpayment>
+        </helpers>
+        <resources>
+            <wbxpayment_setup>
+                <setup>
+                    <module>Webxmore_Payment</module>
+                    <class>Mage_Eav_Model_Entity_Setup</class> 
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </wbxpayment_setup>
+            <wbxpayment_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </wbxpayment_write>
+            <wbxpayment_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </wbxpayment_read>
+        </resources>
+        <blocks>
+            <wbxpayment>
+                <class>Webxmore_Payment_Block</class>
+            </wbxpayment>
+            <adminhtml>  
+                <rewrite> 
+                    <sales_order_view_tab_info>Webxmore_Payment_Block_Adminhtml_Sales_Order_View_Tab_Info</sales_order_view_tab_info>  
+                </rewrite>  
+            </adminhtml>  
+        </blocks>
+        <template>
+            <email>
+                <wbxpayment_activateemail>
+                    <label>Pelecard activate email</label>
+                    <file>wbxpayment_activateemail.html</file>
+                    <type>html</type>
+                </wbxpayment_activateemail>
+            </email>
+        </template>
+        <payment>
+            <groups>
+                <mbookers>JPelecard</mbookers>
+            </groups>
+        </payment>
+    </global>
+    <frontend>
+        <secure_url>
+            <wbxpayment_processing>/wbxpayment/processing</wbxpayment_processing>
+        </secure_url>
+        <routers>
+            <wbxpayment>
+                <use>standard</use>
+                <args>
+                    <module>Webxmore_Payment</module>
+                    <frontName>wbxpayment</frontName>
+                </args>
+            </wbxpayment>
+        </routers>
+    </frontend>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <wbxpayment after="Mage_Adminhtml">Webxmore_Payment</wbxpayment>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <wbxpayment translate="title" module="wbxpayment">
+                                            <title>Payment Settings</title>
+                                        </wbxpayment>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+        <translate>
+            <modules>
+                <wbxpayment>
+                    <files>
+                        <default>Webxmore_Payment.csv</default>
+                    </files>
+                </wbxpayment>
+            </modules>
+        </translate>
+    </adminhtml>
+    <default>
+        <payment>
+            <wbxpayment_acc>
+                <active>1</active>
+                <debug>1</debug>
+                <tid>EC000001</tid>
+                <cid></cid>
+                <mid>8089010411</mid>
+                <mv>1111N1H1F1S1E1NFLFT19U9VHQR9V1SK</mv>se
+                <testmode>0</testmode>
+                <model>wbxpayment/acc</model>
+                <title>Test payment method</title>
+                <allowspecific>0</allowspecific>
+            </wbxpayment_acc>
+        </payment>
+    </default>
+    
+ 
+</config>

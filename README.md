@@ -1,5 +1,5 @@
 # magento
-包含了我們公司客製化後的檔案
+Chinese_Address_Layout_1 為前台結帳地址格式重新編排後的檔案
 
 edit.phtml ｜ 檔案位置位於
 /usr/share/nginx/html/app/design/frontend/base/default/template/customer/address/edit.phtml
@@ -13,4 +13,13 @@ billing.phtml ｜ 檔案位置位於
 shipping.phtml ｜ 檔案位置位於
 /usr/share/nginx/html/app/design/frontend/base/default/template/checkout/onepage/shipping.phtml
 前台顯示於 ｜ 結帳 / 配送資訊 / 下拉選單中選擇『新的地址』
+<<<<<<< Updated upstream
 檔案權限必須要700，不然 Onepage Checkout 會出錯，無法選擇配送方式
+=======
+<<<<<<< HEAD
+
+Credit_Card_Payment 為信用卡收單的模組
+=======
+檔案權限必須要700，不然 Onepage Checkout 會出錯，無法選擇配送方式
+>>>>>>> origin/master
+>>>>>>> Stashed changes

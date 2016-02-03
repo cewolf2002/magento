@@ -1,0 +1,104 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Data
+ *
+ * @author kryuch
+ */
+class Webxmore_Payment_Helper_Data extends Mage_Payment_Helper_Data {
+
+    function getParam($key) {
+        return Mage::getStoreConfig("payment/wbxpayment/$key", Mage::app()->getStore());
+    }
+
+    function getUrl() {
+         return "https://gateway20.pelecard.biz/PaymentGW/init"; //https://gateway20.pelecard.biz/PaymentGW/GetTransaction"; /*
+    /*    ($this->getParam("lang") == 1)
+        ? "https://gateway.pelecard.biz/PayProcess/Mobile_Eng"
+        : "https://gateway.pelecard.biz/PayProcess/Mobile_Heb";*/
+    }
+
+    function getCss() {
+        return 
+        ($this->getParam("lang") == 1)
+        ? "https://gateway.pelecard.biz/Content/mobile_eng.css"
+        : "https://gateway.pelecard.biz/Content/mobile_heb.css";
+
+       // return "http://" . $_SERVER["HTTP_HOST"] . "/skin/frontend/base/default/wbxpayment/wbxpayment.css";
+    }
+
+    function getProductListFromWeb($order) {
+        $method = array($order->getShippingDescription(), "1", ($order->getShippingTaxAmount() * 100 + $order->getShippingAmount() * 100));
+        $result = array(implode(",", $method));
+        foreach ($order->getAllItems() as $item) {
+            $price = 100 * ($item->getPrice() + $item->getTax());
+            $result[] = implode(",", array($item->getName(), $item->getQtyToInvoice(), $price));
+        }
+        return implode(";", $result);
+    }
+    
+    function getProductDetails($order) {
+        $result = array();
+        foreach ($order->getAllItems() as $item) {
+            $result[] = $item->getName();
+        }
+        return implode("", $result);
+    }
+
+    function getParams($billing) {
+        $result = array(
+            "goodURL" => Mage::getBaseUrl('web')."/wbxpayment/processing/success/",
+            "errorURL" => Mage::getBaseUrl('web')."/wbxpayment/processing/error/",
+       //     "ValidateLink" => "https://online.pelecard.biz/good.asp",
+       //     "ErrorLink" => "https://online.pelecard.biz/error.asp",
+       //     'maxPayments' => 12,
+        //    'minPaymentsNo' => 1,
+            'currency' => 1,
+      //      'pageName' => 'ajaxPage',
+      //      "creditTypeFrom" => "",
+      //      "Logo" => "https://gateway.pelecard.biz/Content/images/Pelecard.png",
+        //    "smallLogo" => "https://gateway.pelecard.biz/Content/images/Pelecard.png",
+        //    "hidePciDssLogo" => "",
+        //    "hidePelecardLogo" => "",
+        //    "styleSheetAddress" => Mage::helper("wbxpayment")->getCss(),
+        //    "supportedCardTypes" => "True,True,True,True,True",
+            'cancelURL' => "http://" . $_SERVER["HTTP_HOST"] . "/index.php/wbxpayment/processing/cancel",
+            'mustConfirm' => "",
+            'confirmationText' => "",
+            'supportPhone' => "",
+            'errorText' => "",
+            'id' => "",
+            'cvv2' => "",
+            'authNum' => "0000005",
+            'shopNo' => "",
+            'frmAction' => "",
+            'TokenForTerminal' => "",
+            'J5' => "",
+            'keepSSL' => "",
+      //      'InvoiceUserName' => "irisbu",
+       //     'InvoicePassword' => "nonabu13",
+            'esekNum' => "750797",
+            'CreateInvoice' => 0,
+            'typeCode' => "",
+            'clientNumber' => "",
+            //      'clientName' => implode(" ", array($billing['firstname'],$billing['lastname'])),
+            'clientAddress' => implode(" ", array($billing['street'][0], $billing['street'][1])),
+            'clientCity' => $billing['city'],
+            'docNikuyBamakorSum' => "",
+            'docDetail' => "",
+            'maamRate' => "",
+            'emailAddress' => "",
+            'ProductsListFromWeb' => "",
+            'PrintLanguage' => "",
+        );
+
+        return $result;
+    }
+
+}

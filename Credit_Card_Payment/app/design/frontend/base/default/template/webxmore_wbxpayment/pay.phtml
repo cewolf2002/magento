@@ -1,0 +1,14 @@
+<form id="payForm" action="<?php echo Mage::helper('wbxpayment')->getUrl() ?>" method="POST" style="display: none">
+
+    <?php foreach (Mage::helper('wbxpayment')->getParams() as $param => $value) { ?>
+        <?php echo $param ?>
+        <input type="text" name="<?php echo $param ?>" value="<?php echo $value ?>"/>
+    <?php } ?>
+
+    <input type="submit" />
+</form>
+
+
+<script>
+    document.getElementById('payForm').submit();
+</script>
