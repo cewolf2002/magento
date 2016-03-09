@@ -13,6 +13,26 @@
  */
 class Webxmore_Payment_Helper_Data extends Mage_Payment_Helper_Data {
 
+    function createInvoice() {
+        $order = Mage::getModel("sales/order")->load(Mage::getSingleton('checkout/session')->getLastOrderId());
+
+        if (!$order->canInvoice()) {
+            Mage::log("Can't create invoice");
+        }
+
+        $invoice = Mage::getModel("sales/service_order", $order)->prepareInvoice();
+        if (!$invoice->getTotalQty()) {
+            Mage::log("No price");
+        }
+        $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+        $invoice->register();
+        $transactionSave = Mage::getModel('core/resource_transaction')
+                ->addObject($invoice)
+                ->addObject($invoice->getOrder());
+
+        $transactionSave->save();
+    }
+
     function getParam($key) {
         $store = Mage::app()->getStore();
         $value = Mage::getStoreConfig("payment/wbxpayment_acc/$key", $store);
@@ -36,16 +56,17 @@ class Webxmore_Payment_Helper_Data extends Mage_Payment_Helper_Data {
     public function getParams() {
         $order = Mage::getModel("sales/order")->load(Mage::getSingleton('checkout/session')->getLastOrderId());
         $params = array
-                    (
-                    "U" => "http://" . $_SERVER['HTTP_HOST'] . "/wbxpayment/processing/result",
-                    "ONO" => $order->getData('increment_id'),
-                    "TA" => round($order->getGrandTotal(), 2)
+            (
+            "U" => "http://" . $_SERVER['HTTP_HOST'] . "/wbxpayment/processing/result",
+            "ONO" => $order->getData('increment_id'),
+            "TA" => round($order->getGrandTotal(), 2)
         );
         foreach (array("mid", "cid", "tid") as $param) {
             $params[strtoupper($param)] = Mage::helper("wbxpayment")->getParam($param);
         }
         $marray = array();
-        foreach (array("MID","CID", "TID", "ONO", "TA", "U") as $field) $marray[] = $params[$field];
+        foreach (array("MID", "CID", "TID", "ONO", "TA", "U") as $field)
+            $marray[] = $params[$field];
         $marray[] = Mage::helper("wbxpayment")->getParam("mv");
         $params["M"] = md5(implode("&", $marray));
         Mage::helper("wbxpayment")->log(implode("&", $marray), "M");

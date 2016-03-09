@@ -88,22 +88,7 @@ class Webxmore_Payment_Model_Event {
      */
     public function processStatusEvent() {
         try {
-            $msg = '';
-            switch ($this->getResultData('PelecardStatusCode')) {
-                case self::PELECARD_STATUS_SUCCESS: //ok
-                    if ($amount = $this->_validateEventData()) {
-                        $msg = Mage::helper('wbxpayment')->__('%s has been authorized and captured by Pelecard.', $amount / 100);
-                        $this->_processSale($this->getResultData('PelecardStatusCode'), $msg);
-                        break;
-                    }
-                default: //fail
-                    $msg = Mage::helper('wbxpayment')->__('Payment failed.');
-                    $this->_processCancel($msg);
-                    break;
-            }
-            return $msg;
-        } catch (Mage_Core_Exception $e) {
-            return $e->getMessage();
+                        $this->_processSale();
         } catch (Exception $e) {
             Mage::logException($e);
         }
@@ -140,7 +125,7 @@ class Webxmore_Payment_Model_Event {
      * @return int
      */
     public function successEvent() {
-        $this->_validateEventData(false);
+       // $this->_validateEventData(false);
         return $this->_order->getQuoteId();
     }
 
@@ -149,26 +134,18 @@ class Webxmore_Payment_Model_Event {
      * sends order confirmation to customer
      * @param string $msg Order history message
      */
-    protected function _processSale($status, $msg) {
-        switch ($status) {
-            case self::PELECARD_STATUS_SUCCESS:
+    protected function _processSale() {
                 $this->_createInvoice();
-                $this->_order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $msg);
+                $this->_order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, "Success");
                 // save transaction ID
-                $this->_order->getPayment()->setLastTransId($this->getResultData('authNo'));
-                $additionalInformation = $this->_order->getPayment()->getAdditionalInformation();
-                $additional = array_merge(array($this->getResultData('firstPayment'), $this->getResultData('nextPayments'), $this->getResultData('noOfPayments'), $this->getResultData('CCNo')), $additionalInformation);
-                $this->_order->getPayment()->setAdditionalInformation($additional);
+           //     $this->_order->getPayment()->setLastTransId($this->getResultData('authNo'));
+              //  $additionalInformation = $this->_order->getPayment()->getAdditionalInformation();
+              //  $additional = array_merge(array($this->getResultData('firstPayment'), $this->getResultData('nextPayments'), $this->getResultData('noOfPayments'), $this->getResultData('CCNo')), $additionalInformation);
+             //   $this->_order->getPayment()->setAdditionalInformation($additional);
                 // send new order email
                 $this->_order->sendNewOrderEmail();
                 $this->_order->setEmailSent(true);
-                break;
-            case self::PELECARD_STATUS_PENDING:
-                $this->_order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, true, $msg);
-                // save transaction ID
-                $this->_order->getPayment()->setLastTransId($this->getResultData('authNo'));
-                break;
-        }
+         
         $this->_order->save();
     }
 

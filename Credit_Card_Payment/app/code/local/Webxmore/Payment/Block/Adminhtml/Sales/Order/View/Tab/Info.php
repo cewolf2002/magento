@@ -46,6 +46,10 @@ class Webxmore_Payment_Block_Adminhtml_Sales_Order_View_Tab_Info
         if ("wbxpayment_acc" != $order->getPayment()->getMethodInstance()->getCode()) return ;
         
         $info = Mage::getModel("wbxpayment/order")->getCollection()->addFieldToFilter("`order`", array("eq" => $order->getId()))->getFirstItem();
-        return $info->getInfo();
+        $content = "<br>";
+        foreach ((array)json_decode($info->getInfo()) as $key => $value) {
+            $content .= Mage::helper("wbxpayment")->__($key) ." = ".$value ."; ";
+        }
+        return $content;
     }
 }

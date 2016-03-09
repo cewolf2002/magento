@@ -39,27 +39,34 @@ class Webxmore_Payment_ProcessingController extends Mage_Core_Controller_Front_A
 
     public function resultAction() {
         $params = $this->getRequest()->getParams();
-Mage::helper("wbxpayment")->log(print_r($params, true), "Result");
+        Mage::helper("wbxpayment")->log(print_r($params, true), "Result");
 
         $order = Mage::getModel("sales/order")->loadByIncrementId($params["ONO"]);
-        
-        $text = array();
-        foreach ($params as $field => $value) {
-            $text[] = $field." = ".$value;
-        }
+
         $info = Mage::getModel("wbxpayment/order");
-        $data = array("info" => implode("; ".$text), "`order`" => $order->getId());
-        Mage::helper("wbxpayment")->log(print_r($data, true), "Save to DB");
-        $info->setData($data);
+        $info->setInfo(json_encode($params));
+        $info->setOrder($order->getId());
+
         $info->save();
-        
+
         if ($params["RC"] == "00") {
-            $order->setData('state', "new");
-            $order->setStatus("complete");
+            $order->setData('pending_payment', "new");
+            $order->setStatus("pending_payment");
+            $order->save();
+
+            Mage::helper("wbxpayment")->createInvoice();
+
             $this->_redirect('checkout/onepage/success');
+        } else {
+            $order->setData('state', "new");
+            $order->setStatus("canceled");
+            $order->save();
+            
+               if($order->canCancel())  $order->cancel();
+            //  $order->setStatus('canceled_pendings');
+            $order->save();
+            return $this->_redirect('checkout/onepage/failure');
         }
-        else
-            return $this->_redirect('checkout/cart');
     }
 
     /**

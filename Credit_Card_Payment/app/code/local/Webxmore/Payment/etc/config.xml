@@ -153,8 +153,8 @@
                 <debug>1</debug>
                 <tid>EC000001</tid>
                 <cid></cid>
-                <mid>8089010411</mid>
-                <mv>1111N1H1F1S1E1NFLFT19U9VHQR9V1SK</mv>se
+                <mid></mid>
+                <mv></mv>
                 <testmode>0</testmode>
                 <model>wbxpayment/acc</model>
                 <title>Test payment method</title>
