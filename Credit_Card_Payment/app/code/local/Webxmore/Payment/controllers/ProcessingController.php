@@ -47,20 +47,22 @@ class Webxmore_Payment_ProcessingController extends Mage_Core_Controller_Front_A
         $info->setInfo(json_encode($params));
         $info->setOrder($order->getId());
 
-        $info->save();
+	$info->save();
 
-        if ($params["RC"] == "00") {
-            $order->setData('pending_payment', "new");
-            $order->setStatus("pending_payment");
-            $order->save();
+	if ($params["RC"] == "00") {
+		$order->setData('pending_payment', "new");
+		$order->setStatus("pending_payment");
+		$order->sendNewOrderEmail();
+		$order->setEmailSent(true);
+		$order->save();
 
             Mage::helper("wbxpayment")->createInvoice();
 
             $this->_redirect('checkout/onepage/success');
         } else {
-            $order->setData('state', "new");
-            $order->setStatus("canceled");
-            $order->save();
+		$order->setData('state', "new");
+		$order->setStatus("canceled");
+		$order->save();
             
                if($order->canCancel())  $order->cancel();
             //  $order->setStatus('canceled_pendings');
@@ -103,35 +105,6 @@ class Webxmore_Payment_ProcessingController extends Mage_Core_Controller_Front_A
      * Action to which the transaction details will be posted after the payment
      * process is complete.
      */
-    public function errorAction() {
-        Mage::helper("wbxpayment")->log(print_r($this->getRequest()->getParams(), true), "Error");
-        $result = $this->getRequest()->getParams();
-
-        $session = $this->_getCheckout();
-        if ($session->getLastRealOrderId()) {
-            $order = Mage::getModel('sales/order')->loadByIncrementId($session->getLastRealOrderId());
-            if ($order->getId()) {
-                //Cancel order
-                if ($order->getState() != Mage_Sales_Model_Order::STATE_CANCELED) {
-                    $order->registerCancellation($result['result'])->save();
-                }
-                $quote = Mage::getModel('sales/quote')
-                        ->load($order->getQuoteId());
-                //Return quote
-                if ($quote->getId()) {
-                    $quote->setIsActive(1)
-                            ->setReservedOrderId(NULL)
-                            ->save();
-                    $session->replaceQuote($quote);
-                }
-                //Unset data
-                $session->unsLastRealOrderId();
-            }
-        }
-        Mage::getSingleton('core/session')->addError('ההזמנה נכשלה עם שגיאה מספר ' . substr($result['result'], 0, 3) . ' אנא פנה למוקד שרות הלקוחות במידה וההזמנה נכשלת שנית');
-
-        $this->_redirect('checkout/cart');
-    }
 
     /**
      * Set redirect into responce. This has to be encapsulated in an JavaScript

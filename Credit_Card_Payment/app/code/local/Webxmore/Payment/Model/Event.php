@@ -143,10 +143,12 @@ class Webxmore_Payment_Model_Event {
               //  $additional = array_merge(array($this->getResultData('firstPayment'), $this->getResultData('nextPayments'), $this->getResultData('noOfPayments'), $this->getResultData('CCNo')), $additionalInformation);
              //   $this->_order->getPayment()->setAdditionalInformation($additional);
                 // send new order email
-                $this->_order->sendNewOrderEmail();
-                $this->_order->setEmailSent(true);
+                //$this->_order->sendNewOrderEmail();
+                //$this->_order->setEmailSent(true);
          
         $this->_order->save();
+                $this->_order->sendNewOrderEmail();
+                $this->_order->setEmailSent(true);
     }
 
     /**

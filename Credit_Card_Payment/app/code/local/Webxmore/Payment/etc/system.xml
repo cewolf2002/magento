@@ -67,6 +67,7 @@
                         </mid>
                         <cid translate="label">
                             <label>Child Id</label>
+                            <comment>CID description</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>12</sort_order>
                             <show_in_default>1</show_in_default>
@@ -75,6 +76,7 @@
                         </cid> 
                         <tid translate="label">
                             <label>Terminal</label>
+                            <comment>Terminal description</comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>13</sort_order>
                             <show_in_default>1</show_in_default>

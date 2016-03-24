@@ -76,20 +76,6 @@
                 </rewrite>  
             </adminhtml>  
         </blocks>
-        <template>
-            <email>
-                <wbxpayment_activateemail>
-                    <label>Pelecard activate email</label>
-                    <file>wbxpayment_activateemail.html</file>
-                    <type>html</type>
-                </wbxpayment_activateemail>
-            </email>
-        </template>
-        <payment>
-            <groups>
-                <mbookers>JPelecard</mbookers>
-            </groups>
-        </payment>
     </global>
     <frontend>
         <secure_url>
